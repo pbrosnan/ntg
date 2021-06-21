@@ -1893,10 +1893,7 @@ prop-refl $p |- iff phi phi $=
 $(
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
                 MORE LETTER VARIABLES AND TERMS  
-=-=-=-=-=-=-=-=implies iff < x y | < x S x 
-               implies < x S x | < x y
-30 syl 10 20 implies = y S x 
-                      implies < x S xff =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 The original file peano.mm has only a few names
 for variables (v, x, y and z) and a few names
