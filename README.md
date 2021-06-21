@@ -16,17 +16,17 @@ The first of these proves that 0=1 and the second proves that any wff is true.
 
 Solovay's pa_ax7 reads as follows:
 
->  pa_ax7 $a |- iff   
->              < x y   
->              exists z = y + x S z $.   
+    pa_ax7 $a |- iff   
+                 < x y   
+                 exists z = y + x S z $.   
 
 I propose to change it to: 
 
->  ${      
->  $d x z $.    
->  $d y z $.    
->  pa_ax7 $a |- iff   
->              < x y   
->              exists z = y + x S z $.   
->  $}   
+     ${      
+     $d x z $.    
+     $d y z $.    
+     pa_ax7 $a |- iff   
+                  < x y   
+                  exists z = y + x S z $.   
+     $}   
 
