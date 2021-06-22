@@ -1,8 +1,8 @@
 # ntg
 Number Theory Game for [Metamath](us.metamath.org)
 
-This is a development of Peano Arithemtic based on Robert Solovay's file peano.mm, 
-which comes included in the [metamath-exe distribution](https://github.com/metamath/metamath-exe).
+This is a development of Peano Arithemtic based on Robert Solovay's file [peano.mm](https://github.com/metamath/set.mm/blob/develop/peano.mm), 
+which comes included in the [metamath distribution](https://github.com/metamath).
 The initial, very naive, goal was to emulate the excellent and inspiring Lean 
 [Natural Numbers Game tutorial](https://www.ma.imperial.ac.uk/~buzzard/xena/natural_number_game/) 
 written by Kevin Buzzard and Mohammad Pedramfar.  
