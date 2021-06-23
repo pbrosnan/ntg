@@ -877,15 +877,16 @@ Contributed by Patrick Brosnan
 What follows is a development of Peano arithmetic using the axioms from the
 file peano.mm included in the metamath distribution as a starting point.
 
-My original goal in starting this project was to emulate the lean The Natural
-Numbers Game tutorial written by Kevin Buzzard and Mohammad Pedramfar.  It very
-quickly became apparent that lean and metamath are extremely different
-programs.  Metamath the program "knows" essentially nothing about mathematics.
-You have to teach it everything.  The benefit of this approach is that, after a
-very short time working with it, it becomes pretty clear how metamath works.
-Lean on the other hand comes with enough "tactics" for proving theorems that
-the user gets the sense that it knows some mathematics. However, what is going
-on inside of the lean program seems hidden (at least to me).
+My original (exceedingly naive) goal in starting this project was to emulate
+the Lean Natural Numbers Game tutorial written by Kevin Buzzard and Mohammad
+Pedramfar.  It very quickly became apparent that lean and metamath are
+extremely different programs.  Metamath the program "knows" essentially nothing
+about mathematics.  You have to teach it everything.  The benefit of this
+approach is that, after a very short time working with it, it becomes pretty
+clear how metamath works.  Lean on the other hand comes with enough "tactics"
+for proving theorems that the user gets the sense that it knows some
+mathematics. However, what is going on inside of the lean program seems hidden
+(at least to me).
 
 The upshot of this is that it takes a LOT longer to start writing proofs
 of theorems about natural numbers in metamath than it does in lean. 
@@ -897,14 +898,130 @@ logic.
 
 One of the downsides of peano.mm, which is really clear from the start,
 is the Polish notation.  I managed to work with it for quite a long time,
-but, the problem is always that it is hard to tell when one subexpression
+but the problem is always that it is hard to tell when one subexpression
 ends and another begins.  I wanted to stick with it at first partially 
 because I thought it would be a good way to internalize the reverse Polish
 notation used by the metamath proof stack.  And maybe it did help somewhat 
 with that.  However, when coupled with the bare bones nature of the metamath
 proof assistant, the Polish notation sometimes becomes a big problem.
 
-(Commentary contributed by Patrick Brosnan, 10-Jun-2021.)
+Extended remark on the PA: The "bare bones nature" of the metamath proof
+assistant has some serious upsides as well.  When you start out, there are
+really only two "tactics" to learn
+
+1) assign. 
+2) let.
+
+The first one assigns a step to an axiom or previously proved theorem,
+and the second assigns a variable to an arbitrary expression that you 
+get to write down.  In order to finish a proof and get it to compile
+there are a few more things you should know, which are documented very
+well in the Metamath Book.  The main ones are 
+
+3) improve
+4) save new_proof
+5) verify 
+6) write source
+
+Improve (usually) fills in any details in the proof which were left hanging in
+the proof assistant.  The point here is that, in metamath, the parsing job of
+showing that a wff really is a wff or in peano.mm that a term really is a
+term is in some sense logically part of the proof.  But it is cleverly hidden
+for the most part and left for the machine to do.  Most of the time the machine
+can.  But sometimes it struggles and you have to increase the memory.  (See the
+case of the theorem "addcanc_ind" below for this.) And sometimes you even have
+to help it out yourself manually, as was the case for me in the proof of the
+induction theorem "indi" below.  (Unfortunately, I don't have any advice
+about how to help it out manually, and I don't think I would be able to 
+reproduce what I did for indi.)
+
+Save new_proof is important just because you shouldn't forget to do it or your
+proof will be lost.  I always write "save new / com" (using abbreviations) to
+save the proof in compressed form.  Otherwise you wind up with a long file.
+
+Verify is important because the proof assistant doesn't check everything.  One
+major thing it doesn't check is disjoint variable assumptions.  But, like the
+Metamath Book says, verify points out where these are missing, and you can fix
+them after the fact in the file, read it back it,  and then use verify again
+to make sure you did it correctly.  But also "improve" doesn't always work.
+So you really seem to need that verify step to be sure even if you're
+not worried about disjoint variables.
+
+The one thing I found myself wanting in the metamath proof assistant
+is just a tiny bit more flexibility with unifying. What happens
+when you assign a step is that the unifier presents you with various
+options on how to assign variables.  When I had several variables to
+assign it was often the case that variable $3 would be correct but
+$4 was wrong. (Metamath knows no math. So the suggestions it gives are
+nonsensical most of the time.) I was wishing that I could keep the correct
+suggestion for $3 and then move on to deal with $4 and the other variables.
+When I had a lot of variables to assign is that 
+I would either (a) quit the unifier and assign things myself or (b)
+sit there hitting "r" (for reject) and return repeatedly until the 
+right assignment came up.  Option (b) was annoying but safer because
+if you mess up the variable assignment by copying something in wrong
+it can basically trash the proof. 
+
+I've heard that mmj2, the java program by Mel O'Cat with another metamath proof
+assistant, has a better unifier.  But I never got it to work on my main machine
+(a MacBook Air).  Part of this was my incompetence at installing Java.  It took
+me a while to get both java and a javascript plugin working (maybe because I
+used OpenJDK 16).  Then, when I finally got it working, mmj2 gave me an error
+about "binop" when reading this file.  (I'm not sure what it doesn't like about
+the appearance of "binop" here.) I have an old Linux laptop, but the font was
+too small with java.  (I could make the font bigger in some places but not
+everywhere.)  But, still, it gave the error about binop.  (I did go through
+the mmj2 tutorial though on my Linux laptop.) 
+
+When I first started with the proof assistant, I was confused by the 
+notion of the proof stack.  (As I said above, that was one of the
+reasons I decided to stick with Polish notation.)  I would try to 
+write the proofs out meticulously thinking a lot about the order of
+the statements.  After a while, this became a lot more automatic.
+Still, while I would "wing it" on the smaller proofs, for anything
+serious I would write down the proofs beforehand more or less in the 
+form that they appear when you type 
+  
+    show proof thm /lem /ren
+
+The one difference is that I would follow the advice I've seen from the
+mmj2 people and multiply the numbers by 10 so that I could fit new 
+statments in if I forgot.  This all went in a file called scratch.txt.
+
+
+  contrad
+  10 h2 implies phi not psi
+  20 h1 implies phi psi
+  30 andant 10, 20 implies phi and not psi psi
+  40 contra implies not psi implies psi chi
+  50 simpandr 40 implies and not psi psi chi
+  60 syl 30 50 implies phi chi
+
+Here h1 and h2 are just shorthand I learned from the mmj2 documentation
+for the first and second hypothesis, in this case contrad.1 and 
+contrad.2.   
+
+One benefit of writing things out beforehand is that, while the proof assistant
+supports proving only in the backward direction, when you write it out you get
+to think of it mostly in the forward direction.  I say "mostly" because you do 
+have to worry about what happens in the proof stack.  For example, notice that
+every line number on the left in the above example except the last one also appears
+somewhere on the right. This has to happen because, part of the metamath spec is that
+there be only one thing left on the proof stack when the proof is done.  
+For some reason, when I first started working with metamath, this requirement seemed
+very difficult to fulfill. But it is actually trivial. (Just delete unused parts of your
+proof.)  It is very slightly annoying to reorder your proof so that the right things go
+on the stack at the right time.  (Apparently, mmj2 can automate this.)  
+But I got used to it pretty quickly. 
+
+Minor remark. Technically the proof stack contains both the parsing statements
+(showing that something is a wff) and the logical proof statements.  But one of
+the very nice things about the design of metamath is that you can basically
+ignore the parsing statements for visualizing the proof stack.  This is 
+really because, although the logical proof statements can (and definitely do)
+require parsing statements as antecedents, the other way around never happens.
+
+(Commentary contributed by Patrick Brosnan, 23-Jun-2021.)
 
 
 #*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#
@@ -1998,7 +2115,7 @@ in the length of the formulas involved.
 
 This section does, however, prove the axioms of generalization
 and distinctness from set.mm.  Still, working with peano.mm
-makes me appreciate then handling of quantifiers in set.mm.
+makes me appreciate the handling of quantifiers in set.mm.
 One thing that is particularly nice is that the axiom of 
 distinctness in set.mm is the only logical axiom which uses
 a disjoint variable assumption. 
@@ -2515,7 +2632,7 @@ $(
 Here we attempt to use the (rather complicated) induction axiom.
 The goal is to be able to prove things without messing around 
 too much with quantifiers.
-The theorem that lets us to this is "nindd" stated below.
+The theorem that lets us do this is "nindd" stated below.
 The idea and the name for the theorem was stolen from set.mm.
 But it has to be modified slightly to work in peano.mm. 
 Essentially, subsets have to be changed into terms.

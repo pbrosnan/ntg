@@ -9,7 +9,7 @@ written by Kevin Buzzard and Mohammad Pedramfar.
 
 In the course of the development it became clear that Solovay's pa_ax7 needs to
 be changed slightly.  
-The problem is that, without a distinct variable condition on z, it is possible to arrive at 
+The problem is that, without a disjoint variable condition on z, it is possible to arrive at 
 a contradiction.  
 This is done at the end of the file in the theorems *zerisone* and *anything*.
 The first of these proves that 0=1 and the second proves that any wff is true.
