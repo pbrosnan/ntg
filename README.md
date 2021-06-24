@@ -1,5 +1,5 @@
 # ntg
-Number Theory Game for [Metamath](https://us.metamath.org)
+Number Theory Game for [Metamath](http://us.metamath.org)
 
 This is a development of Peano Arithemtic based on Robert Solovay's file [peano.mm](https://github.com/metamath/set.mm/blob/develop/peano.mm), 
 which comes included in the [metamath distribution](https://github.com/metamath).
