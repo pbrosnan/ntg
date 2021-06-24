@@ -39,7 +39,7 @@ So, for better or worse, it not longer possible to prove that 1=0 in Peano Arith
 using the version of  
 [peano.mm](https://github.com/metamath/set.mm/blob/develop/peano.mm)
 distributed by metamath.  (At least it is no longer *known* to be possible.)
-For the time being, the version of peano.mm in this ntg git rep still proves 1=0.
+For the time being, the version of peano.mm in this ntg git repo still proves 1=0.
 I plan to change it soon though. So, if you want to be able to prove anything using
 this site, you need to act fast.
 
