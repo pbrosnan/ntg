@@ -38,11 +38,12 @@ And this change has been pushed to the new version of
 So, for better or worse, it not longer possible to prove that 1=0 in Peano Arithmetic 
 using the version of  
 [peano.mm](https://github.com/metamath/set.mm/blob/develop/peano.mm)
-in distributed by metamath.
-For the time being, the version of peano.mm in this ntg git rep still proves 1=0, 
-and, in fact, it proves that any wff in Peano Arithemetic is true.
+distributed by metamath.
+For the time being, the version of peano.mm in this ntg git rep still proves 1=0.
+I plan to change it soon though. So, if you want to be able to prove anything using
+this site, you need to act fast.
 
-## Future plans
+## Future goals 
 
 My initial plan was to work on peano.mm until I got a proof of the
 irrationality of the square root of 2.  My hope is that this development will
@@ -52,7 +53,7 @@ have tried (and am trying) to include helpful comments about the process I went
 through in learning metamath.  For this, the 
 [Metamath Book](http://us.metamath.org/downloads/metamath.pdf) was an absolute necessity.
 I also used several logic textbooks including Elliott Mendelson's *Introduction to
-Mathematical Logic.* 
+Mathematical Logic.*   
 
 The real work in metamath is going on in 
 set.mm, which can be browsed online in the [Metamath Home Page](http://us.metamath.org).
