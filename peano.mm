@@ -2475,7 +2475,7 @@ substitution that phi[t/x] is the same thing as
      
        forall x (x = t implies phi) 
 
-What this means is that if we have an another wff psi which we can
+What this means is that if we have  another wff psi which we can
 prove to be just phi with t substituted in for x and if we know that
 forall x phi holds, then we ought to know that psi always holds as 
 well. In other words, we should be able to deduce psi.
