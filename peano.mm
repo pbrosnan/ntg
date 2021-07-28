@@ -9,8 +9,10 @@ $)
 $( Copyright (GPL) 2004 Robert Solovay, PO Box 5949, Eugene OR, 97405   $)
 $( Comments welcome; email to:  solovay at gmail dot com $)
 
-$( Version of 20-January-07 $)
+$( Version of 22-Jun-2021 $)
 $( Replaces prior version of 13-July-04 $)
+$( 22-Jun-2021 (Patrick Brosnan) - Add missing distinct variable constraints
+   to pa_ax7 $)
 $( 7-Oct-2004 (N. Megill) - Minor fixes to conform to strict Metamath spec $)
 $( 11-Oct-2004 (N. Megill) - "$a implies" --> "$a |- implies" at line 224 $)
 $( 24-Jun-2006 (N. Megill) - Made label and math symbol names spaces
@@ -39,7 +41,7 @@ In particular we will have a constant var. Among our other constants
 will be all the symbols of Peano arithmetic except the variables. The
 variables of the formal language of Peano Arithmetic will be
 identified with the variables attached to the constant symbol var. In
-this way each well formed formula or term of PA will *be* a certain
+this way each well formed formula or term of PA will *be* a certan
 metamath expression. $)
 
 $(
@@ -115,11 +117,6 @@ $v phi psi chi $.
 wff_phi $f wff phi $.
 wff_psi $f wff psi $.
 wff-chi $f wff chi $.
-
-
-
-
-
 
 wff_atom $a wff binpred s t $.
 wff_not $a wff not psi $.
@@ -204,7 +201,7 @@ df-or $a |- iff
 
 $( Equality axioms $)
 
-$( From here on out, I won't make an effort to coordinate labels
+$( From here on out, I won't make an effort to cordinate labels
 between my axioms and those of set.mm $)
 
 eq-refl $a |- = t t $.
@@ -263,7 +260,7 @@ $( alpha equivalence $)
 $( Let Phi_1 and Phi_2 be well-formed formulas of PA. Say Phi_1 is s_1
 ... s_n and Phi_2 is t_1 ... t_m.
 
-    We say that Phi_1 and Phi_2 are alpha-equivalent if:
+    We say that Phi_1 and Phi_2 are alpha-equialent if:
 
 1) n = m.
 
@@ -309,7 +306,7 @@ requirement that any pair of distinct  variables appearing in Phi_1 or
 Phi_2 is declared disjoint]
 
       |- iff Phi_1 Phi_2
-is a theorem of Metamath [i.e. follows from the given axioms].
+is a theorem of Metmath [i.e. follows from the given axioms].
 
 In view of the remarks about trim formulas, we are reduced to the
 following special case: Phi_2 is trim and no bound variable of Phi_2
@@ -743,7 +740,7 @@ ${
 $d x chi $.
 $d x t $.
 
-all_elim3_hyp1 $e |- implies = x t
+ all_elim3_hyp1 $e |- implies = x t
                            iff phi chi $.
 all_elim3 $a |- implies forall x implies = x t
                                          phi
@@ -784,9 +781,12 @@ pa_ax5 $a |- = 0
                * x 0 $.
 pa_ax6 $a |- = + * x y x
                * x S y $.
-pa_ax7 $a |- iff
-             < x y
-             exists z = y + x S z $.
+${
+  $d z x $.  $d z y $.
+  pa_ax7 $a |- iff
+               < x y
+               exists z = y + x S z $.
+$}
 
 $( It suffices to give the induction axiom for the case when phi does
 not contain x free. For the usual form of the axiom follows from this
@@ -858,21 +858,26 @@ assumptions allow us to verify step by step that each such line is a
 theorem of Peano arithmetic.
 $)
 
-
+$( For Emacs $)
+$( Local Variables: $)
+$( eval:'(show-paren-mode t) $)
+$( End: $)
 $(
 
-##############################################################################
+###############################################################################
 
-Metamath version of Lean's Natural Numbers Game
+                Metamath version of Lean's Natural Numbers Game
 
-Contributed by Patrick Brosnan
-
-  Es gibt nichts Gutes, ausser man tut es.
-
-                   --- Erich Kaestner 
+                                                  Contributed by Patrick Brosnan
 
 
-##############################################################################
+                                        Es gibt nichts Gutes, ausser man tut es.
+                                                              
+                                                              --- Erich Kaestner
+
+#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#
+                                  Introduction
+#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#
 
 What follows is a development of Peano arithmetic using the axioms from the
 file peano.mm included in the metamath distribution as a starting point.
@@ -888,13 +893,53 @@ for proving theorems that the user gets the sense that it knows some
 mathematics. However, what is going on inside of the lean program seems hidden
 (at least to me).
 
-The upshot of this is that it takes a LOT longer to start writing proofs
+One consequence of this is that it takes a LOT longer to start writing proofs
 of theorems about natural numbers in metamath than it does in lean. 
 Moreover, while a mathematician or a math student can use lean without 
 knowing much about its logical underpinnings (type theory), it seems
 very difficult to do this with metamath.  To use metamath effectively,
 you are basically forced to learn a little about basic mathematical
 logic.
+
+So, while the goal of this development of Peano Arithmetic is really to help 
+people to use metamath by starting out with something simple, it took me 
+much longer to work through than the Lean Natural Numbers Game, and the same
+will almost certainly hold for anyone else who works through it.  On the other
+hand, for me, setting up basic Peano Arithmetic in metamath using Solovay's 
+file was enormously educational and also a lot of fun.  My hope is that 
+it will be the same for other people working with this file.
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+                Advice for using this file for learning metamath 
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+It seems like the easiest way to get started learning from this file
+would be to reprove some of the theorems.   For this, you need the metamath
+program and the Metamath Book to learn the basics of interacting
+with the proof assistant.  Section 2.4, titled of the Metamath Book has a 
+walk-through of the Proof Assistant titled "Your First Proof." 
+The first step is to enter the Proof Assistant on a theorem and 
+then type "delete all" to delete the proof.  After this  
+you can replace the proof given here with your own proof.
+For example, you can start with the first theorem, ax2d, given
+in this file.
+
+You can also browse the proofs given in this file using the
+metamath command "show proof." And below in the subsection
+on the Proof Assistant I give some thoughts about using it,
+which I hope will be helpful.
+
+Aside from the Metamath Book, "Introduction to Mathematical Logic,"
+by Elliott Mendelson was incredibly helpful to me in coming up with 
+the proofs, especially in the early stages of the development.
+Towards the end, I also used Shoenfield's book "Mathematical Logic,"
+which is reference by Solovay in the text above.  Solovay's handling
+of quantifiers seems a little bit more similar to Shoenfield's than
+to Mendelson's.   
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+                                Polish notation
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 One of the downsides of peano.mm, which is really clear from the start,
 is the Polish notation.  I managed to work with it for quite a long time,
@@ -905,11 +950,15 @@ notation used by the metamath proof stack.  And maybe it did help somewhat
 with that.  However, when coupled with the bare bones nature of the metamath
 proof assistant, the Polish notation sometimes becomes a big problem.
 
-Extended remark on the PA: The "bare bones nature" of the metamath proof
-assistant has some serious upsides as well.  When you start out, there are
-really only two "tactics" to learn
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+                            Metamath Proof Assistant 
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-1) assign. 
+The "bare bones nature" of the metamath proof assistant has some serious
+upsides as well.  When you start out, there are really only two "tactics" to
+learn
+
+1) assign; 
 2) let.
 
 The first one assigns a step to an axiom or previously proved theorem,
@@ -918,49 +967,47 @@ get to write down.  In order to finish a proof and get it to compile
 there are a few more things you should know, which are documented very
 well in the Metamath Book.  The main ones are 
 
-3) improve
-4) save new_proof
-5) verify 
-6) write source
+3) improve;
+4) save new_proof;
+5) verify;  
+6) write source.
 
 Improve (usually) fills in any details in the proof which were left hanging in
 the proof assistant.  The point here is that, in metamath, the parsing job of
-showing that a wff really is a wff or in peano.mm that a term really is a
+showing that a wff really is a wff or, in peano.mm, that a term really is a
 term is in some sense logically part of the proof.  But it is cleverly hidden
 for the most part and left for the machine to do.  Most of the time the machine
 can.  But sometimes it struggles and you have to increase the memory.  (See the
 case of the theorem "addcanc_ind" below for this.) And sometimes you even have
 to help it out yourself manually, as was the case for me in the proof of the
-induction theorem "indi" below.  (Unfortunately, I don't have any advice
-about how to help it out manually, and I don't think I would be able to 
-reproduce what I did for indi.)
+induction theorem "indi" below.  (Unfortunately, I don't have any advice about
+how to help it out manually, and I don't think I would be able to reproduce
+what I did for indi.)
 
-Save new_proof is important just because you shouldn't forget to do it or your
-proof will be lost.  I always write "save new / com" (using abbreviations) to
-save the proof in compressed form.  Otherwise you wind up with a long file.
+"Save new_proof" is important just because you shouldn't forget to do it or
+your proof will be lost.  I always write "save new / com" (using abbreviations)
+to save the proof in compressed form.  Otherwise you wind up with a long file.
 
-Verify is important because the proof assistant doesn't check everything.  One
-major thing it doesn't check is disjoint variable assumptions.  But, like the
-Metamath Book says, verify points out where these are missing, and you can fix
-them after the fact in the file, read it back it,  and then use verify again
-to make sure you did it correctly.  But also "improve" doesn't always work.
-So you really seem to need that verify step to be sure even if you're
+"Verify" is important because the proof assistant doesn't check everything.
+One major thing it doesn't check is disjoint variable assumptions.  But, like
+the Metamath Book says, verify points out where these are missing, and you can
+fix them after the fact in the file, read it back in,  and then use verify
+again to make sure you did it correctly.  But also "improve" doesn't always
+work.  So you really seem to need that verify step to be sure even if you're
 not worried about disjoint variables.
 
-The one thing I found myself wanting in the metamath proof assistant
-is just a tiny bit more flexibility with unifying. What happens
-when you assign a step is that the unifier presents you with various
-options on how to assign variables.  When I had several variables to
-assign it was often the case that variable $3 would be correct but
-$4 was wrong. (Metamath knows no math. So the suggestions it gives are
-nonsensical most of the time.) I was wishing that I could keep the correct
-suggestion for $3 and then move on to deal with $4 and the other variables.
-When I had a lot of variables to assign is that 
-I would either (a) quit the unifier and assign things myself or (b)
-sit there hitting "r" (for reject) and return repeatedly until the 
-right assignment came up.  Option (b) was annoying but safer because
-if you mess up the variable assignment by copying something in wrong
-it can basically trash the proof. 
+The one thing I found myself wanting in the metamath proof assistant is just a
+tiny bit more flexibility with unifying. What happens when you assign a step is
+that the unifier presents you with various options on how to assign variables.
+When I had several variables to assign it was often the case that, for example,
+variable $3 would be correct but $4 was wrong. (Metamath knows no math. So the
+suggestions it gives are nonsensical most of the time.) I was wishing that I
+could keep the correct suggestion for $3 and then move on to deal with $4 and
+the other variables.  When I had a lot of variables to assign, I would either
+(a) quit the unifier and assign things myself or (b) sit there hitting "r" (for
+reject) and return repeatedly until the right assignment came up.  Option (b)
+was annoying but safer because, if make a mistake in the variable assignment by
+copying something in wrong, it can basically trash the proof. 
 
 I've heard that mmj2, the java program by Mel O'Cat with another metamath proof
 assistant, has a better unifier.  But I never got it to work on my main machine
@@ -968,26 +1015,24 @@ assistant, has a better unifier.  But I never got it to work on my main machine
 me a while to get both java and a javascript plugin working (maybe because I
 used OpenJDK 16).  Then, when I finally got it working, mmj2 gave me an error
 about "binop" when reading this file.  (I'm not sure what it doesn't like about
-the appearance of "binop" here.) I have an old Linux laptop, but the font was
-too small with java.  (I could make the font bigger in some places but not
-everywhere.)  But, still, it gave the error about binop.  (I did go through
-the mmj2 tutorial though on my Linux laptop.) 
+the appearance of "binop" here.) 
 
-When I first started with the proof assistant, I was confused by the 
-notion of the proof stack.  (As I said above, that was one of the
-reasons I decided to stick with Polish notation.)  I would try to 
-write the proofs out meticulously thinking a lot about the order of
-the statements.  After a while, this became a lot more automatic.
-Still, while I would "wing it" on the smaller proofs, for anything
-serious I would write down the proofs beforehand more or less in the 
-form that they appear when you type 
+When I first started with the metamath proof assistant, I was confused by the
+notion of the proof stack.  (As I said above, that was one of the reasons I
+decided to stick with Polish notation.)  I would try to write the proofs out
+meticulously thinking a lot about the order of the statements.  After a while,
+this became a lot more automatic.  Still, while I would "wing it" on the
+smaller proofs, for anything serious I would write down the proofs beforehand
+more or less in the form that they appear when you type 
   
     show proof thm /lem /ren
 
-The one difference is that I would follow the advice I've seen from the
-mmj2 people and multiply the numbers by 10 so that I could fit new 
-statments in if I forgot.  This all went in a file called scratch.txt.
-
+The one difference is that I would follow the advice I've seen from the mmj2
+people and multiply the numbers by 10 so that I could fit new statments in if I
+forgot.  This all went in a file called scratch.txt.  For example, here is an
+expert from scratch.txt of my proof of the theorem "contrad." (The theorem says
+that, if the hypotheses contrad.1 and contrad.2 hold, so that phi implies both
+psi and not psi, then phi implies chi, where chi is any wff.) 
 
   contrad
   10 h2 implies phi not psi
@@ -1002,19 +1047,23 @@ for the first and second hypothesis, in this case contrad.1 and
 contrad.2.   
 
 One benefit of writing things out beforehand is that, while the proof assistant
-supports proving only in the backward direction, when you write it out you get
-to think of it mostly in the forward direction.  I say "mostly" because you do 
-have to worry about what happens in the proof stack.  For example, notice that
-every line number on the left in the above example except the last one also appears
-somewhere on the right. This has to happen because, part of the metamath spec is that
-there be only one thing left on the proof stack when the proof is done.  
-For some reason, when I first started working with metamath, this requirement seemed
-very difficult to fulfill. But it is actually trivial. (Just delete unused parts of your
-proof.)  It is very slightly annoying to reorder your proof so that the right things go
-on the stack at the right time.  (Apparently, mmj2 can automate this.)  
-But I got used to it pretty quickly. 
+supports proving theorems only in the backward direction, when you write it out
+you get to think of it mostly in the forward direction.  I say "mostly" because
+you do have to worry about what happens in the proof stack.  For example,
+notice that every line number on the left in the above example except the last
+one also appears somewhere on the right. This has to happen because, part of
+the metamath specification is that there be only one thing left on the proof
+stack when the proof is done.  When I first started working with metamath, this
+requirement seemed very difficult to fulfill. But it is actually trivial.
+(Just delete unused parts of your proof.)  It is very slightly annoying to
+reorder your proof so that the right things go on the stack at the right time.
+(Apparently, mmj2 can automate this.)  But I got used to it pretty quickly. 
 
-Minor remark. Technically the proof stack contains both the parsing statements
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+                                  Minor remark
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+Technically the proof stack contains both the parsing statements
 (showing that something is a wff) and the logical proof statements.  But one of
 the very nice things about the design of metamath is that you can basically
 ignore the parsing statements for visualizing the proof stack.  This is 
@@ -1024,28 +1073,27 @@ require parsing statements as antecedents, the other way around never happens.
 (Commentary contributed by Patrick Brosnan, 23-Jun-2021.)
 
 
-#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#
-            PROPOSITIONAL LOGIC 
-#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#
+#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#
+                              PROPOSITIONAL LOGIC 
+#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#
 
 The first part of this "number theory game" consists of several things about
 logic, many of which were shamelessly copied, along with the title above, from
 set.mm.  These are theorems I took almost completely for granted despite the
 fact that, as a mathematician, I had been using them for most of my life.  It
-is something like having to learn to speak English again from the grammar.  
+was something like having to learn to speak English again from the grammar.  
 
 For example, like I think most mathematicians, I had never heard of the
-deduction theorem.  I quickly found out what it was when I started 
-learning metamath (because it is basically impossible to use it without
-being aware of the deduction theorem).   And I learned the words
-for how the metamath community gets around the need to for a program
-to turn inferences into theorems automatically using ideas related to 
-the proof or the deduction theorem.  In particular, I learned what the
-deduction form and inference form of a theorem are.  (See the metamath
-explorer.) However, when I first started naming theorems I was still a
-little bit shaky on these concepts. So, in the first several weeks
-of working with peano, I broke the metamath convention that deduction forms end
-in the letter "d" and inferences end in the letter "i."
+deduction theorem.  I quickly found out what it was when I started learning
+metamath (because metamath is basically impossible to use without being aware
+of the deduction theorem).   I also learned the words for how the metamath
+community gets around the need for a program to turn inferences into
+theorems automatically using ideas related to the proof or the deduction
+theorem.  In particular, I learned what the deduction form and inference form
+of a theorem are.  (See the metamath explorer.) However, when I first started
+naming theorems I was still a little bit shaky on these concepts. So, in the
+first several weeks of working with peano, I broke the metamath convention that
+deduction forms end in the letter "d" and inferences end in the letter "i."
 Part of the problem is that I didn't really completely understand how useful
 the deduction form is.
 
@@ -1053,7 +1101,6 @@ When I stole a theorem from set.mm, I usually stole the name along with the
 theorem.  However, since the point of this exercise for me was to learn
 as much of metamath as I could on my own, many of the theorems here 
 duplicate set.mm but with different (and almost always much, much worse) names.
-This is unfortunate. 
 
 In addition to consulting set.mm, I also occasionally took a peek at Mario
 Carneiro's peano.mm0.  This is a development of Peano Arithmetic in Carneiro's
@@ -1063,7 +1110,8 @@ it also has finite sets.  MM1 also has tactics for writing proofs.  For
 example, the main induction theorem I use, nindd, which was essentially copied
 from set.mm, requires the user to prove several substitution goals.   These
 goals are annoying to prove because they are essentially obvious, but the
-proofs can be tedious.  In Carneiro's mm1, they are all proved using tactics.  
+proofs can be tedious.  In Carneiro's mm1, I believe they can be proved 
+using tactics.  
 
 It felt like cheating for me to look at peano.mm1.  So I tried to limit
 the number of times I consulted it, and I never actually used the mm1 
@@ -1072,19 +1120,16 @@ excluding the ability to write tactics.  For example, it appears to me
 from looking at peano.mm1 that unification is a lot easier to deal with
 there then in peano.mm.
 
-
 (Commentary contributed by Patrick Brosnan, 10-Jun-2021.)
 
-#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#
 
-                    SOME THEOREMS
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+                          MORE PROPOSITIONAL VARIABLES
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#
+Solovay's peano.mm starts with just a few propositional variables.
+This seemed inconvenient.  So I added some more.
 
-
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-                    MORE PROPOSITIONAL VARIABLES
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 $)
 
 $v phi0 phi1 phi2 psi0 psi1 psi2 chi0 chi1 chi2 tau tau0 tau1 tau2 theta theta0 theta1 theta2 eta eta0 eta1 eta2 $.
@@ -1111,9 +1156,13 @@ wff_eta1 $f wff eta1 $.
 wff_eta2 $f wff eta2 $.
 
 $(
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-                TAUTOLOGIES NOT USING NOT
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+                           TAUTOLOGIES NOT USING NOT
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+These are tautologies (theorems of propositional logic) which can be stated
+without the "not" operator, and proved without using ax-3.  
+
 $)
 
 ${
@@ -1127,14 +1176,13 @@ ${
 $}
 
 
-
 ${ 
   mp2.1 $e |- phi $.
   mp2.2 $e |- psi $.
   mp2.3 $e |- implies phi
                       implies psi chi $.
-  $( Double modus ponens inference copied from set.mm. (Original
-     by NM. Copy by Patrick Brosnan 7-Apr-2017 
+  $( Double modus ponens inference copied from set.mm. Original
+     by NM (= Norman Megill). Copy by Patrick Brosnan 7-Apr-2017 
      (Contributed by Patrick Brosnan, 8-Apr-2021.) $)
   mp2   $p |- chi $=
     ( logbinopimplies wff_logbinop ax-mp ) BCEAGCBHDFII $.
@@ -1173,7 +1221,19 @@ $( Principle of identity copied from set.mm.
 ${
   iffcomd.1 $e |- iff phi psi $.
   $( Deduction form of a result to commute iff statements. 
-     (Contributed by Patrick Brosnan, 8-Apr-2021.) $) 
+     (Contributed by Patrick Brosnan, 8-Apr-2021.) 
+
+     WARNING: This is not a deduction form in the
+     terminology of set.mm.  It is an inference.  I named it 
+     when I had a very shaky understanding of the "deduction 
+     theorem" and an even shakier understanding of the terminology
+     surrounding it in set.mm.  So the name
+     should be something like iffcomi.  In set.mm the corresponding
+     result is called bicomi.
+
+     (Commentary added by Patrick Brosnan, 19-Jul-2021.) 
+
+     $) 
   iffcomd   $p |- iff psi phi $=
     ( logbinopimplies wff_logbinop logbinopiff bi1 ax-mp bi2 bi3 ) DBAEZFABEZFB
     AEZKCABGHDABEZDLKEMNCABIHBAJHH $.
@@ -2008,6 +2068,13 @@ prop-refl $p |- iff phi phi $=
   ( id iff-ded ) AAABZDC $.
 
 $(
+#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#
+                                PEANO ARITHMETIC
+#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#
+$)
+
+
+$(
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
                 MORE LETTER VARIABLES AND TERMS  
 =-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -2036,7 +2103,6 @@ it by hand. The one with the variables with produced
 by substituting "{a..z}" with just "va, vb, ..., "
 
 Anyway, here goes.
-
 
 (Commentary contributed by Patrick Brosnan, 10-Jun-2021.)
 
@@ -3518,14 +3584,27 @@ notsumexcor $p |- implies = y S x
   ( quant_ex tvar binop_plus tbinop binpred_equals wff_atom wff_quant notsumcor
   tsucc wff_not notsp a1i ) BCBDZADZOKEFGHZILOPKGHBQPOJMN $.
 
-nlcontr $p |- implies = y S x not < x y $=
-  ( tsucc binpred_equals wff_atom binop_plus tbinop wff_quant binpred_less_than
-  tvar quant_ex wff_not notsumexcor pa_ax7 ded-iff1 ax3rd syl ) BJZAJZCDEBKRSRC
-  FGDEHZLSRIEZLABMUATUATABBNOPQ $.
+
+$( 
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+                                LEMMAS FOR A CONTRADICTION 
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+The original version of Axiom pa_ax7 from peano.mm had a small error:
+it omitted the disjoint variables assumption.  In this section,
+we're going to prove a few lemmas that will help to get a contradiction
+from the original version of pa_ax7. Then, in the next section, we're going
+assume the original version as an hypothesis and derive a contradiction.
+First, we'll prove that 0 = 1, and then we'll use it to prove anything.
+
+$)
+
+
+
 
 ${
 $d a z $.
-
+$( Just shows that a is less than its successor. $)
 nlyest $p |- < a S a $=
   ( varz quant_ex tsucc tvar binop_plus tbinop binpred_equals binpred_less_than
   wff_atom wff_quant tzero eq-refl a1i eq-suc eqplusd e-congrd pa_ax3t pa_ax4t
@@ -3534,36 +3613,11 @@ nlyest $p |- < a S a $=
   JARAUOOTALSUAUBUKUJBAUEUCUDT $. 
 $}
 
+$( Corollary of nlyest with a substitution. $)
 nlyes $p |- implies = y S x 
                     < x y $=
   ( tvar binpred_equals wff_atom binpred_less_than eq-refl a1i eq-congrd nlyest
   tsucc id indlem ) BCZACZKZDEZONFEOPFEOONPFQOODEQOGHQLIOJM $.
-
-nlfalse $p |- implies = y S x 
-                      = 0 S 0 $=
-  ( tsucc binpred_equals wff_atom binpred_less_than tzero nlyes nlcontr contrad
-  tvar ) BKZAKZCDEMLFEGGCDEABHABIJ $.
-
-${
-$d x y $.
-$d t x $.
-
-nlfalsest $p |- implies = y S t 
-                        = 0 S 0 $=
-  ( varx logbinopimplies tzero binpred_equals tvar wff_logbinop nlfalse eq-refl
-  tsucc wff_atom a1i eq-suc e-congrd logbinopiff prop-refl prop-congrd v2td ) A
-  CDEEKFLZBGZCGZKZFLZHDTUAAKZFLZHCBIUBAFLZUDUFTTUAUAUCUEUGUAUAFLUGUAJMUBANOPTTH
-  UGTQMRS $.
-$}
-
-nlspec $p |- implies = y S 0 
-                     = 0 S 0 $=
-  ( tzero nlfalsest ) BAC $.
-
-exnlspec $p |- implies exists y = y S 0 
-                       = 0 S 0 $=
-  ( tvar tzero tsucc binpred_equals wff_atom nlfalsest al2ex ) AABCDZEFCIEFCAGH
-  $. 
 
 pa_ax1_0 $p |- not = 0 S 0 $=
   ( tzero pa_ax1t ) AB $. 
@@ -3572,10 +3626,75 @@ exiy $p |- exists y = y S 0 $=
   ( tzero tsucc tvar binpred_equals wff_atom id eq-refl a1i e-congrd exinstic )
   BCZAADZLEFZLLEFZMLLLNNGONLHZIJPK $.
 
+$( 
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+                                 CONTRADICTION  
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+As mentioned above, the original version of Axiom pa_ax7 from peano.mm had a small error:
+it omitted the disjoint variables assumption.  Here we assume the original 
+version of the axiom, pa_ax7orig below, and use it to get a contradiction.
+
+Ideally, I would like to be able to confine pa_ax7orig to a frame using an $e statement,
+and then derive a contradiction only in the frame.  However, I have not been able to make
+this work.  Roughly speaking, the problem seems to be that the way variable substitions are handled in axioms
+is different from the way they are handled in hypotheses. 
+
+(Commentary added by Patrick Brosnan, 29-Jul-2021.)
+
+$)
+
+$( The original form of pa_ax7, with distinct variable hypotheses. $)
+pa_ax7orig $a |- iff
+               < x y
+               exists z = y + x S z $.
+
+$( An "incorrect" statement derivable using pa_ax7orig by substituting y and z for the same
+variable. $)
+nlcontr $p |- implies = y S x not < x y $=
+  ( tsucc binpred_equals wff_atom binop_plus tbinop wff_quant binpred_less_than
+  tvar quant_ex wff_not notsumexcor pa_ax7orig ded-iff1 ax3rd syl ) BJZAJZCDEBK
+  RSRCFGDEHZLSRIEZLABMUATUATABBNOPQ $.
+
+$( Another incorrect statement, but one where the conclusion is more obviously false. $)
+nlfalse $p |- implies = y S x 
+                      = 0 S 0 $=
+  ( tsucc binpred_equals wff_atom binpred_less_than tzero nlyes nlcontr contrad
+  tvar ) BKZAKZCDEMLFEGGCDEABHABIJ $.
+
+${
+$d x y $.
+$d t x $.
+$( Yet another incorrect statement.  Generalizes nlfalse by allying x to be a term. $)
+nlfalsest $p |- implies = y S t 
+                        = 0 S 0 $=
+  ( varx logbinopimplies tzero binpred_equals tvar wff_logbinop nlfalse eq-refl
+  tsucc wff_atom a1i eq-suc e-congrd logbinopiff prop-refl prop-congrd v2td ) A
+  CDEEKFLZBGZCGZKZFLZHDTUAAKZFLZHCBIUBAFLZUDUFTTUAUAUCUEUGUAUAFLUGUAJMUBANOPTTH
+  UGTQMRS $.
+$}
+
+$( Specialization of nlfalsest, where we substitute 0 for t. $)
+nlspec $p |- implies = y S 0 
+                     = 0 S 0 $=
+  ( tzero nlfalsest ) BAC $.
+
+$( First step at getting rid of variable y in nlspec, and then getting rid of hypothesis,
+by quantifying over it. $)
+exnlspec $p |- implies exists y = y S 0 
+                       = 0 S 0 $=
+  ( tvar tzero tsucc binpred_equals wff_atom nlfalsest al2ex ) AABCDZEFCIEFCAGH
+  $. 
+
+$( Prove that zerisone. Contradicts tzero obviously. $) 
 zerisone $p |- = 0 S 0 $=
   ( vary quant_ex tvar tzero tsucc binpred_equals wff_atom wff_quant exiy ax-mp
   exnlspec ) ABACDEZFGHDLFGAIAKJ $.
 
+$( Proves that any wff holds.  Something you can do (in classical logic) when you prove
+a contradiction. $)
 anything $p |- phi $=
   ( tzero tsucc binpred_equals wff_atom zerisone wff_not pa_ax1_0 contrad ax-mp
   id a1i ) BBCDEZAFMMAMKMGMHLIJ $.
+
+
